@@ -15,7 +15,7 @@ export class ProductCardComponent {
   @Output() productClick = new EventEmitter<Product>();
 
   // Fallback image for error handling
-  private readonly fallbackImage = 'assets/images/product-placeholder.png';
+  private readonly fallbackImage = 'images/placeholder.svg';
 
   /**
    * Handle add to cart button click

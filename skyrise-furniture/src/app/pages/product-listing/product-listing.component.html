@@ -1,0 +1,101 @@
+<div class="page">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__content">
+        <h1 class="hero__title">Elegant<br>Furniture</h1>
+      </div>
+      <div class="hero__image">
+        <img src="assets/images/hero-chair.jpg" alt="Elegant modern chair" class="hero__img">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <div class="content-wrapper">
+        <!-- Sidebar Filters -->
+        <aside class="content-wrapper__sidebar">
+          <app-product-filter 
+            [productList]="allProducts"
+            (filtersChanged)="onFiltersChanged()">
+          </app-product-filter>
+        </aside>
+
+        <!-- Product Grid -->
+        <section class="content-wrapper__main">
+          <div class="products-header">
+            <h2 class="products-header__title">Product Categories</h2>
+            <div class="products-header__info">
+              <span class="products-header__count" *ngIf="!isLoading">
+                Showing {{ displayedProductsCount }} of {{ totalProductsCount }} products
+              </span>
+            </div>
+          </div>
+
+          <app-product-grid
+            (productClick)="onProductClick($event)"
+            (addToCart)="onAddToCart($event)"
+            (clearFilters)="onClearFilters()">
+          </app-product-grid>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Section -->
+  <section class="bottom-section">
+    <div class="container">
+      <div class="unique-furniture">
+        <div class="unique-furniture__content">
+          <h2 class="unique-furniture__title">Our Furniture<br>Is Unique &<br>Cosy!</h2>
+          <p class="unique-furniture__description">
+            If you redesigned in recent years, you may have opted for the popular neutral tones that have dominated interior design. Think bright and airy decor with white walls, off-white rugs and neutral colors chairs.
+          </p>
+        </div>
+        <div class="unique-furniture__image">
+          <img src="assets/images/unique-furniture.jpg" alt="Unique furniture showcase" class="unique-furniture__img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta">
+        <div class="cta__content">
+          <span class="cta__subtitle">Build custom furniture</span>
+          <h2 class="cta__title">Craft Own Furniture</h2>
+          <div class="cta__links">
+            <a href="#" class="cta__link">Facebook</a>
+            <a href="#" class="cta__link">Instagram</a>
+            <a href="#" class="cta__link">Twitter</a>
+            <a href="#" class="cta__link">LinkedIn</a>
+          </div>
+        </div>
+        <div class="cta__action">
+          <button class="btn btn--primary cta__button">Lets Talk!</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__content">
+        <p class="footer__copyright">&copy; 2023. All right reserved.</p>
+        <p class="footer__brand">CREATIVE DIGITAL</p>
+        <address class="footer__address">
+          3x Exit 73th street<br>
+          NEW YORK, NY
+        </address>
+      </div>
+    </div>
+  </footer>
+</div>
