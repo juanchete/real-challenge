@@ -34,12 +34,35 @@
   </div>
 
   <!-- Products Grid -->
-  <div *ngIf="!isLoading && !error && products.length > 0" class="product-grid">
-    <app-product-card 
-      *ngFor="let product of products.slice(0, 6); trackBy: trackByProductId" 
-      [product]="product"
-      (addToCart)="onAddToCart($event)"
-      (productClick)="onProductClick($event)">
-    </app-product-card>
+  <div *ngIf="!isLoading && !error && products.length > 0">
+    <!-- Product Count -->
+    <div class="product-grid__info">
+      <p class="product-grid__count">
+        Showing {{ displayedProductsCount }} of {{ totalProductsCount }} products
+      </p>
+    </div>
+    
+    <!-- Grid -->
+    <div class="product-grid">
+      <app-product-card 
+        *ngFor="let product of displayedProducts; trackBy: trackByProductId" 
+        [product]="product"
+        (addToCart)="onAddToCart($event)"
+        (productClick)="onProductClick($event)">
+      </app-product-card>
+    </div>
+    
+    <!-- Load More Button -->
+    <div *ngIf="hasMore && !isLoadingMore" class="product-grid__load-more">
+      <button class="btn btn--secondary" (click)="onLoadMore()">
+        Load More Products
+      </button>
+    </div>
+    
+    <!-- Loading More Spinner -->
+    <div *ngIf="isLoadingMore" class="product-grid__loading-more">
+      <div class="spinner"></div>
+      <p>Loading more products...</p>
+    </div>
   </div>
 </section>

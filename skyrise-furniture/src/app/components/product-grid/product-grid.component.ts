@@ -41,11 +41,14 @@ export class ProductGridComponent implements OnInit, OnDestroy {
 
   // Local state for UI
   products: Product[] = [];
+  displayedProducts: Product[] = [];
   isLoading = true;
   isLoadingMore = false;
   hasMore = false;
   error: string | null = null;
   loadingSkeletons = Array(this.productsPerPage).fill(null);
+  currentPage = 1;
+  itemsPerPage = 6;
 
   private destroy$ = new Subject<void>();
 
@@ -72,6 +75,8 @@ export class ProductGridComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((products) => {
         this.products = products;
+        this.currentPage = 1;
+        this.updateDisplayedProducts();
       });
 
     // Subscribe to loading state
@@ -129,7 +134,40 @@ export class ProductGridComponent implements OnInit, OnDestroy {
    * Handle load more products
    */
   onLoadMore(): void {
-    this.store.dispatch(ProductActions.loadMoreProducts());
+    if (this.hasMorePages) {
+      this.currentPage++;
+      this.updateDisplayedProducts();
+    }
+  }
+
+  /**
+   * Update displayed products based on current page
+   */
+  private updateDisplayedProducts(): void {
+    const endIndex = this.currentPage * this.itemsPerPage;
+    this.displayedProducts = this.products.slice(0, endIndex);
+    this.hasMore = this.hasMorePages;
+  }
+
+  /**
+   * Get total products count
+   */
+  get totalProductsCount(): number {
+    return this.products.length;
+  }
+
+  /**
+   * Get displayed products count
+   */
+  get displayedProductsCount(): number {
+    return this.displayedProducts.length;
+  }
+
+  /**
+   * Check if there are more pages
+   */
+  get hasMorePages(): boolean {
+    return this.displayedProductsCount < this.totalProductsCount;
   }
 
   /**
