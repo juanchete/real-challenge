@@ -28,15 +28,6 @@
 
         <!-- Product Grid -->
         <section class="content-wrapper__main">
-          <div class="products-header">
-            <h2 class="products-header__title">Product Categories</h2>
-            <div class="products-header__info">
-              <span class="products-header__count" *ngIf="!(isLoading$ | async)">
-                Showing {{ displayedProductsCount$ | async }} of {{ totalProductsCount$ | async }} products
-              </span>
-            </div>
-          </div>
-
           <app-product-grid
             (productClick)="onProductClick($event)"
             (addToCart)="onAddToCart($event)"
