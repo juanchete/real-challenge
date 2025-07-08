@@ -1,0 +1,58 @@
+/* Footer Component - BEM Methodology */
+
+.footer {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  padding: 32px 0;
+  font-family: var(--font-family-logo);
+}
+
+.footer__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer__copyright,
+.footer__brand,
+.footer__address {
+  margin: 0;
+  font-size: 14px;
+}
+
+.footer__copyright {
+  opacity: 0.9;
+}
+
+.footer__brand {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.footer__address {
+  font-style: normal;
+  text-align: right;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer__content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .footer__address {
+    text-align: center;
+  }
+}
+
+/* Container utility class (if not globally available) */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import Header from '@/components/Header/Header';
+import Footer from '@/components/Footer/Footer';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
 import SimilarProducts from '@/components/SimilarProducts/SimilarProducts';
 import { getProductById } from '@/lib/api';
@@ -46,17 +47,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className={styles.productPage}>
-      <nav className={styles.productPage__nav}>
-        <div className={styles.productPage__navContainer}>
-          <Link href="http://localhost:4200" className={styles.productPage__logo}>
-            <span className={styles.productPage__logoText}>skyrise</span>
-            <span className={styles.productPage__logoAccent}>decor</span>
-          </Link>
-          <button className={styles.productPage__cartButton}>
-            Let&apos;s Talk!
-          </button>
-        </div>
-      </nav>
+      <Header />
 
       <section className={styles.productPage__content}>
         <ProductDetail product={product} />
@@ -79,28 +70,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      <footer className={styles.productPage__footer}>
-        <div className={styles.productPage__footerContainer}>
-          <div className={styles.productPage__footerContent}>
-            <p className={styles.productPage__footerCopyright}>
-              ©2023. All right reserved.
-            </p>
-            <p className={styles.productPage__footerBrand}>
-              BEATRIZ DIGITAL
-            </p>
-            <div className={styles.productPage__footerLinks}>
-              <a href="#" className={styles.productPage__footerLink}>Facebook</a>
-              <a href="#" className={styles.productPage__footerLink}>Instagram</a>
-              <a href="#" className={styles.productPage__footerLink}>Twitter</a>
-              <a href="#" className={styles.productPage__footerLink}>LinkedIn</a>
-            </div>
-            <address className={styles.productPage__footerAddress}>
-              36 East 73th street<br />
-              NEW YORK, NY
-            </address>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
