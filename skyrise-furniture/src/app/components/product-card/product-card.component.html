@@ -1,0 +1,55 @@
+<article class="product-card" [class.product-card--loading]="!product" (click)="onProductClick()" role="button" tabindex="0">
+  <!-- Loading skeleton -->
+  <div *ngIf="!product" class="product-card__skeleton">
+    <div class="skeleton product-card__skeleton-image"></div>
+    <div class="product-card__skeleton-content">
+      <div class="skeleton product-card__skeleton-title"></div>
+      <div class="skeleton product-card__skeleton-price"></div>
+    </div>
+  </div>
+
+  <!-- Product content -->
+  <div *ngIf="product" class="product-card__content">
+    <!-- Product image -->
+    <div class="product-card__image-wrapper">
+      <img 
+        [src]="product.image" 
+        [alt]="product.title"
+        class="product-card__image"
+        loading="lazy"
+        (error)="onImageError($event)">
+      
+      <!-- Hover overlay with add to cart button -->
+      <div class="product-card__overlay">
+        <button 
+          class="btn btn--icon product-card__add-btn" 
+          [attr.aria-label]="'Add ' + product.title + ' to cart'"
+          (click)="onAddToCart()">
+          <svg class="product-card__add-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 5V15M5 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Product details -->
+    <div class="product-card__details">
+      <h3 class="product-card__title">{{ product.title }}</h3>
+      <div class="product-card__footer">
+        <span class="product-card__price">${{ product.price.toFixed(2) }}</span>
+        <div class="product-card__rating" *ngIf="product.rating">
+          <span class="product-card__rating-stars" [attr.aria-label]="'Rating: ' + product.rating.rate + ' out of 5'">
+            <svg *ngFor="let star of getStarArray()" 
+                 class="product-card__star" 
+                 [class.product-card__star--filled]="star <= product.rating.rate"
+                 width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.51L6 8.885L2.91 10.51L3.5 7.07L1 4.635L4.455 4.13L6 1Z" 
+                    fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="product-card__rating-count">({{ product.rating.count }})</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
