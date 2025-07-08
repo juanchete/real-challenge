@@ -1,0 +1,50 @@
+<header class="header" [class.header--scrolled]="isScrolled">
+  <div class="container">
+    <div class="header__wrapper">
+      <!-- Logo -->
+      <a href="/" class="header__logo" aria-label="Skyrise Furniture Home">
+        <span class="header__logo-text">skyrise</span>
+        <span class="header__logo-accent">decor</span>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="header__nav" aria-label="Main navigation">
+        <ul class="header__nav-list">
+          <li class="header__nav-item">
+            <a href="#" class="header__nav-link header__nav-link--active">Modern Furniture</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Actions -->
+      <div class="header__actions">
+        <button class="btn btn--secondary header__action-btn" aria-label="View less tables">
+          Lets Talk!
+        </button>
+        
+        <!-- Mobile menu toggle -->
+        <button 
+          class="header__menu-toggle" 
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          (click)="toggleMobileMenu()">
+          <span class="header__menu-toggle-line"></span>
+          <span class="header__menu-toggle-line"></span>
+          <span class="header__menu-toggle-line"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav class="header__mobile-nav" [class.header__mobile-nav--open]="isMobileMenuOpen" aria-label="Mobile navigation">
+    <ul class="header__mobile-nav-list">
+      <li class="header__mobile-nav-item">
+        <a href="#" class="header__mobile-nav-link header__mobile-nav-link--active">Modern Furniture</a>
+      </li>
+    </ul>
+    <button class="btn btn--secondary header__mobile-action-btn">
+      Lets Talk!
+    </button>
+  </nav>
+</header>
