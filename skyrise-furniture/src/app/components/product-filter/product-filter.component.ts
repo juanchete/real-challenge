@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { FilterService } from '../../services/filter.service';
-import { Product } from '../../models/product.interface';
-import { ProductCategory, PriceRange } from '../../models/filter.interface';
+import { Product, ProductCategory } from '../../models/product.interface';
+import { PriceRange } from '../../models/filter.interface';
 
 interface ColorOption {
   name: string;

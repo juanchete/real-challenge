@@ -1,3 +1,5 @@
+import { ProductCategory } from './product.interface';
+
 // Filter interface for product filtering
 export interface ProductFilter {
   categories: ProductCategory[];
