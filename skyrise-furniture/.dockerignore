@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Angular build files
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# Testing
+karma.conf.js
+protractor.conf.js
+e2e/
+*.spec.ts
+
+# Documentation
+README.md
+*.md
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Development files
+.angular/
+.editorconfig
+.browserslistrc
+
+# Source maps
+*.map
