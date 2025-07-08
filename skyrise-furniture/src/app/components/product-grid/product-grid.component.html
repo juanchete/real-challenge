@@ -36,18 +36,10 @@
   <!-- Products Grid -->
   <div *ngIf="!isLoading && !error && products.length > 0" class="product-grid">
     <app-product-card 
-      *ngFor="let product of products; trackBy: trackByProductId" 
+      *ngFor="let product of products.slice(0, 6); trackBy: trackByProductId" 
       [product]="product"
       (addToCart)="onAddToCart($event)"
       (productClick)="onProductClick($event)">
     </app-product-card>
-  </div>
-
-  <!-- Load More Button -->
-  <div *ngIf="!isLoading && !error && hasMore && products.length > 0" class="product-grid__load-more">
-    <button class="btn btn--secondary" (click)="onLoadMore()" [disabled]="isLoadingMore">
-      <span *ngIf="!isLoadingMore">Load More Products</span>
-      <span *ngIf="isLoadingMore">Loading...</span>
-    </button>
   </div>
 </section>

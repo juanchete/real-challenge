@@ -4,102 +4,102 @@ import { productAdapter, initialProductState } from './product.state';
 
 export const productReducer = createReducer(
   initialProductState,
-  
+
   // Load products
   on(ProductActions.loadProducts, (state) => ({
     ...state,
     isLoading: true,
-    error: null
+    error: null,
   })),
-  
-  on(ProductActions.loadProductsSuccess, (state, { products }) => 
+
+  on(ProductActions.loadProductsSuccess, (state, { products, hasMore }) =>
     productAdapter.setAll(products, {
       ...state,
       isLoading: false,
       totalCount: products.length,
-      hasMore: products.length >= 12 // Assuming 12 products per page
+      hasMore: hasMore,
     })
   ),
-  
+
   on(ProductActions.loadProductsFailure, (state, { error }) => ({
     ...state,
     isLoading: false,
-    error
+    error,
   })),
-  
+
   // Load more products
   on(ProductActions.loadMoreProducts, (state) => ({
     ...state,
     isLoadingMore: true,
-    error: null
+    error: null,
   })),
-  
-  on(ProductActions.loadMoreProductsSuccess, (state, { products, hasMore }) => 
+
+  on(ProductActions.loadMoreProductsSuccess, (state, { products, hasMore }) =>
     productAdapter.addMany(products, {
       ...state,
       isLoadingMore: false,
       hasMore,
-      currentPage: state.currentPage + 1
+      currentPage: state.currentPage + 1,
     })
   ),
-  
+
   on(ProductActions.loadMoreProductsFailure, (state, { error }) => ({
     ...state,
     isLoadingMore: false,
-    error
+    error,
   })),
-  
+
   // Load single product
   on(ProductActions.loadProduct, (state) => ({
     ...state,
     isLoading: true,
-    error: null
+    error: null,
   })),
-  
-  on(ProductActions.loadProductSuccess, (state, { product }) => 
+
+  on(ProductActions.loadProductSuccess, (state, { product }) =>
     productAdapter.upsertOne(product, {
       ...state,
-      isLoading: false
+      isLoading: false,
     })
   ),
-  
+
   on(ProductActions.loadProductFailure, (state, { error }) => ({
     ...state,
     isLoading: false,
-    error
+    error,
   })),
-  
+
   // Load categories
   on(ProductActions.loadCategories, (state) => ({
     ...state,
     isLoading: true,
-    error: null
+    error: null,
   })),
-  
+
   on(ProductActions.loadCategoriesSuccess, (state, { categories }) => ({
     ...state,
     categories,
-    isLoading: false
+    isLoading: false,
   })),
-  
+
   on(ProductActions.loadCategoriesFailure, (state, { error }) => ({
     ...state,
     isLoading: false,
-    error
+    error,
   })),
-  
+
   // Select product
   on(ProductActions.selectProduct, (state, { productId }) => ({
     ...state,
-    selectedProductId: productId
+    selectedProductId: productId,
   })),
-  
+
   // Clear error
   on(ProductActions.clearProductError, (state) => ({
     ...state,
-    error: null
+    error: null,
   })),
-  
+
   // Reset products
   on(ProductActions.resetProducts, () => initialProductState)
 );

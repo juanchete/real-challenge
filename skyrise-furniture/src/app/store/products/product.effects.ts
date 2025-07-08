@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of, timer } from 'rxjs';
-import { 
-  switchMap, 
-  map, 
-  catchError, 
-  withLatestFrom, 
+import {
+  switchMap,
+  map,
+  catchError,
+  withLatestFrom,
   debounceTime,
   distinctUntilChanged,
-  tap
+  tap,
 } from 'rxjs/operators';
 import * as ProductActions from './product.actions';
 import { ProductService } from '../../services/product.service';
@@ -21,7 +21,7 @@ export class ProductEffects {
   private readonly actions$ = inject(Actions);
   private readonly productService = inject(ProductService);
   private readonly store = inject(Store<AppState>);
-  
+
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductActions.loadProducts),
@@ -30,61 +30,86 @@ export class ProductEffects {
         // Check cache: if products exist and were loaded within 5 minutes, use cache
         if (cachedProducts.length > 0) {
           return timer(0).pipe(
-            map(() => ProductActions.loadProductsSuccess({ products: cachedProducts }))
+            map(() => {
+              const hasMore = cachedProducts.length >= 12;
+              return ProductActions.loadProductsSuccess({
+                products: cachedProducts,
+                hasMore,
+              });
+            })
           );
         }
-        
+
         // Otherwise, fetch from API
         return this.productService.getAllProducts().pipe(
-          map(products => ProductActions.loadProductsSuccess({ products })),
-          catchError(error => of(ProductActions.loadProductsFailure({ 
-            error: error.message || 'Failed to load products' 
-          })))
+          map((products) => {
+            const hasMore = products.length >= 12;
+            return ProductActions.loadProductsSuccess({ products, hasMore });
+          }),
+          catchError((error) =>
+            of(
+              ProductActions.loadProductsFailure({
+                error: error.message || 'Failed to load products',
+              })
+            )
+          )
         );
       })
     )
   );
-  
+
   loadProduct$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductActions.loadProduct),
       switchMap(({ id }) =>
         this.productService.getProductById(id).pipe(
-          map(product => ProductActions.loadProductSuccess({ product })),
-          catchError(error => of(ProductActions.loadProductFailure({ 
-            error: error.message || 'Failed to load product' 
-          })))
+          map((product) => ProductActions.loadProductSuccess({ product })),
+          catchError((error) =>
+            of(
+              ProductActions.loadProductFailure({
+                error: error.message || 'Failed to load product',
+              })
+            )
+          )
         )
       )
     )
   );
-  
+
   loadCategories$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductActions.loadCategories),
       switchMap(() =>
         this.productService.getCategories().pipe(
-          map(categories => ProductActions.loadCategoriesSuccess({ categories })),
-          catchError(error => of(ProductActions.loadCategoriesFailure({ 
-            error: error.message || 'Failed to load categories' 
-          })))
+          map((categories) =>
+            ProductActions.loadCategoriesSuccess({ categories })
+          ),
+          catchError((error) =>
+            of(
+              ProductActions.loadCategoriesFailure({
+                error: error.message || 'Failed to load categories',
+              })
+            )
+          )
         )
       )
     )
   );
-  
+
   // Log errors to console in development
-  logErrors$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(
-        ProductActions.loadProductsFailure,
-        ProductActions.loadProductFailure,
-        ProductActions.loadCategoriesFailure
+  logErrors$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          ProductActions.loadProductsFailure,
+          ProductActions.loadProductFailure,
+          ProductActions.loadCategoriesFailure
+        ),
+        tap((action) => {
+          console.error('Product Error:', action.error);
+        })
       ),
-      tap(action => {
-        console.error('Product Error:', action.error);
-      })
-    ), { dispatch: false }
+    { dispatch: false }
   );
 
   constructor() {}

@@ -110,12 +110,6 @@
   }
 }
 
-@media (min-width: 1280px) {
-  .product-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 /* Animation for grid items */
 .product-grid > * {
   animation: fadeInUp 0.5s ease-out;

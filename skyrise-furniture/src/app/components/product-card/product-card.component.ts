@@ -20,11 +20,11 @@ export class ProductCardComponent {
   /**
    * Handle add to cart button click
    */
-  onAddToCart(): void {
+  onAddToCart(event: Event): void {
     if (this.product) {
       this.addToCart.emit(this.product);
       // Prevent event from bubbling to card click
-      event?.stopPropagation();
+      event.stopPropagation();
     }
   }
 
