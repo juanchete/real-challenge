@@ -1,0 +1,178 @@
+<aside class="filter-sidebar" [class.filter-sidebar--mobile-open]="isMobileFilterOpen">
+  <!-- Filter Header -->
+  <div class="filter-sidebar__header">
+    <h2 class="filter-sidebar__title">Filter By</h2>
+    <button 
+      *ngIf="hasActiveFilters()" 
+      class="filter-sidebar__clear-btn"
+      (click)="onClearAllFilters()">
+      Clear All
+    </button>
+    <button 
+      class="filter-sidebar__close-btn"
+      aria-label="Close filters"
+      (click)="closeMobileFilter()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Category Filter Section -->
+  <div class="filter-section">
+    <button 
+      class="filter-section__header"
+      (click)="toggleSection('categories')"
+      [attr.aria-expanded]="expandedSections['categories']"
+      aria-controls="category-filters">
+      <span class="filter-section__title">Product Categories</span>
+      <svg class="filter-section__icon" [class.filter-section__icon--rotated]="!expandedSections['categories']" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div id="category-filters" class="filter-section__content" [class.filter-section__content--collapsed]="!expandedSections['categories']">
+      <ul class="filter-category__list">
+        <li class="filter-category__item" *ngFor="let category of displayCategories">
+          <label class="filter-category__label">
+            <input 
+              type="checkbox" 
+              class="filter-category__checkbox"
+              [checked]="isCategorySelected(category.value)"
+              (change)="onCategoryChange(category.value, $event)"
+              [attr.aria-label]="'Filter by ' + category.displayName">
+            <span class="filter-category__name">{{ category.displayName }}</span>
+            <span class="filter-category__count">({{ getCategoryCount(category.value) }})</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Price Range Filter Section -->
+  <div class="filter-section">
+    <button 
+      class="filter-section__header"
+      (click)="toggleSection('price')"
+      [attr.aria-expanded]="expandedSections['price']"
+      aria-controls="price-filters">
+      <span class="filter-section__title">Filter By Price</span>
+      <svg class="filter-section__icon" [class.filter-section__icon--rotated]="!expandedSections['price']" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div id="price-filters" class="filter-section__content" [class.filter-section__content--collapsed]="!expandedSections['price']">
+      <div class="filter-price">
+        <div class="filter-price__inputs">
+          <div class="filter-price__input-group">
+            <label for="min-price" class="u-sr-only">Minimum price</label>
+            <span class="filter-price__currency">$</span>
+            <input 
+              id="min-price"
+              type="number" 
+              class="filter-price__input"
+              [value]="currentPriceRange.min"
+              [min]="priceRange.min"
+              [max]="priceRange.max"
+              (change)="onPriceInputChange('min', $event)"
+              placeholder="Min">
+          </div>
+          <span class="filter-price__separator">-</span>
+          <div class="filter-price__input-group">
+            <label for="max-price" class="u-sr-only">Maximum price</label>
+            <span class="filter-price__currency">$</span>
+            <input 
+              id="max-price"
+              type="number" 
+              class="filter-price__input"
+              [value]="currentPriceRange.max"
+              [min]="priceRange.min"
+              [max]="priceRange.max"
+              (change)="onPriceInputChange('max', $event)"
+              placeholder="Max">
+          </div>
+        </div>
+        
+        <div class="filter-price__slider">
+          <div class="filter-price__slider-track">
+            <div 
+              class="filter-price__slider-range" 
+              [style.left.%]="getRangeLeft()"
+              [style.width.%]="getRangeWidth()">
+            </div>
+          </div>
+          <input 
+            type="range" 
+            class="filter-price__slider-input filter-price__slider-input--min"
+            [min]="priceRange.min"
+            [max]="priceRange.max"
+            [value]="currentPriceRange.min"
+            (input)="onSliderChange('min', $event)"
+            aria-label="Minimum price slider">
+          <input 
+            type="range" 
+            class="filter-price__slider-input filter-price__slider-input--max"
+            [min]="priceRange.min"
+            [max]="priceRange.max"
+            [value]="currentPriceRange.max"
+            (input)="onSliderChange('max', $event)"
+            aria-label="Maximum price slider">
+        </div>
+        
+        <div class="filter-price__display">
+          <span>Price: ${{ currentPriceRange.min }} - ${{ currentPriceRange.max }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Filter Section -->
+  <div class="filter-section">
+    <button 
+      class="filter-section__header"
+      (click)="toggleSection('colors')"
+      [attr.aria-expanded]="expandedSections['colors']"
+      aria-controls="color-filters">
+      <span class="filter-section__title">Select Colours</span>
+      <svg class="filter-section__icon" [class.filter-section__icon--rotated]="!expandedSections['colors']" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div id="color-filters" class="filter-section__content" [class.filter-section__content--collapsed]="!expandedSections['colors']">
+      <div class="filter-color__grid">
+        <button 
+          *ngFor="let color of availableColors"
+          class="filter-color__item"
+          [class.filter-color__item--selected]="isColorSelected(color.value)"
+          [style.background-color]="color.hex"
+          [attr.aria-label]="'Select ' + color.name + ' color'"
+          (click)="onColorToggle(color.value)">
+          <svg *ngIf="isColorSelected(color.value)" class="filter-color__check" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.5 4.5L6 12L2.5 8.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Apply Button -->
+  <div class="filter-sidebar__mobile-actions">
+    <button class="btn btn--primary filter-sidebar__apply-btn" (click)="applyMobileFilters()">
+      Apply Filters
+    </button>
+  </div>
+</aside>
+
+<!-- Mobile Filter Toggle Button -->
+<button 
+  class="filter-mobile-toggle"
+  (click)="openMobileFilter()"
+  aria-label="Open filters">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 10H15M2.5 5H17.5M7.5 15H12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span>Filters</span>
+  <span *ngIf="activeFilterCount > 0" class="filter-mobile-toggle__count">{{ activeFilterCount }}</span>
+</button>
