@@ -25,7 +25,8 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy built Angular app from builder stage
-COPY --from=builder /app/dist/skyrise-furniture /usr/share/nginx/html
+# Angular 18 with application builder outputs to browser subdirectory
+COPY --from=builder /app/dist/skyrise-furniture/browser /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80

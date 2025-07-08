@@ -10,7 +10,7 @@ This project consists of two separate e-commerce applications demonstrating mode
 Run both applications with a single command:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Access the applications:

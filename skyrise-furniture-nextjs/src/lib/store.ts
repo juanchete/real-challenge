@@ -28,7 +28,7 @@ interface ProductDetailState {
 const useProductDetailStore = create<ProductDetailState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         // Initial state
         product: null,
         loading: false,

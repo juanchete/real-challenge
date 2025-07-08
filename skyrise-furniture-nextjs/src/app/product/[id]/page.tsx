@@ -1,18 +1,20 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
 import { getProductById } from '@/lib/api';
 import styles from './page.module.css';
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params;
   try {
-    const product = await getProductById(params.id);
+    const product = await getProductById(id);
     
     return {
       title: `${product.title} - Skyrise Decor`,
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         images: [product.image],
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'Product Not Found - Skyrise Decor',
       description: 'The product you are looking for could not be found.',
@@ -32,11 +34,12 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
+  const { id } = await params;
   let product;
   
   try {
-    product = await getProductById(params.id);
-  } catch (error) {
+    product = await getProductById(id);
+  } catch {
     notFound();
   }
 
@@ -44,9 +47,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <main className={styles.productPage}>
       <nav className={styles.productPage__nav}>
         <div className={styles.productPage__navContainer}>
-          <a href="/" className={styles.productPage__logo}>
+          <Link href="/" className={styles.productPage__logo}>
             skyrise decor
-          </a>
+          </Link>
           <button className={styles.productPage__cartButton}>
             Lets Talk!
           </button>
