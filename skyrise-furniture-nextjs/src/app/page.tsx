@@ -1,42 +1,28 @@
-import Link from 'next/link';
+import Header from '@/components/Header/Header';
+import Footer from '@/components/Footer/Footer';
+import ProductGrid from '@/components/ProductGrid/ProductGrid';
 import styles from './page.module.css';
 
 export default function Home() {
   return (
     <div className={styles.page}>
+      <Header />
+      
       <main className={styles.main}>
-        <h1>Skyrise Decor - Product Details</h1>
-        <p>Welcome to Skyrise Decor Next.js Application</p>
-        
-        <div className={styles.productLinks}>
-          <h2>Sample Products:</h2>
-          <ul>
-            <li>
-              <Link href="/product/1">Fjallraven - Foldsack No. 1 Backpack</Link>
-            </li>
-            <li>
-              <Link href="/product/2">Mens Casual Premium Slim Fit T-Shirts</Link>
-            </li>
-            <li>
-              <Link href="/product/3">Mens Cotton Jacket</Link>
-            </li>
-            <li>
-              <Link href="/product/4">Mens Casual Slim Fit</Link>
-            </li>
-          </ul>
-        </div>
+        <section className={styles.hero}>
+          <h1 className={styles.hero__title}>Welcome to Skyrise Decor</h1>
+          <p className={styles.hero__subtitle}>Discover our curated collection of modern furniture and home decor</p>
+        </section>
 
-        <div className={styles.info}>
-          <p>This is the Next.js product detail application with:</p>
-          <ul>
-            <li>Server-side rendering (SSR)</li>
-            <li>Dynamic routing</li>
-            <li>Zustand state management</li>
-            <li>BEM CSS methodology</li>
-            <li>Inter font</li>
-          </ul>
-        </div>
+        <section className={styles.products}>
+          <div className={styles.products__container}>
+            <h2 className={styles.products__title}>Featured Products</h2>
+            <ProductGrid />
+          </div>
+        </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

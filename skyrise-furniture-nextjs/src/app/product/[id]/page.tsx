@@ -1,11 +1,20 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
-import SimilarProducts from '@/components/SimilarProducts/SimilarProducts';
 import { getProductById } from '@/lib/api';
+import { SkeletonBox } from '@/components/Skeletons';
 import styles from './page.module.css';
+
+const SimilarProducts = dynamic(() => import('@/components/SimilarProducts/SimilarProducts'), {
+  loading: () => (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+      {[1, 2, 3, 4].map((i) => <SkeletonBox key={i} height={300} />)}
+    </div>
+  ),
+});
 
 interface ProductPageProps {
   params: Promise<{

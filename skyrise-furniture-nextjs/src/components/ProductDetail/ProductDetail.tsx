@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import React, { useEffect, lazy, Suspense } from 'react';
 import styles from './ProductDetail.module.css';
 import Rating from '@/components/Rating/Rating';
-import QuantityCounter from '@/components/QuantityCounter/QuantityCounter';
-import ColorSelector from '@/components/ColorSelector/ColorSelector';
+import OptimizedImage from '@/components/OptimizedImage/OptimizedImage';
 import useProductDetailStore from '@/lib/store';
 import { Product, productColors } from '@/types/product';
+import { SkeletonBox } from '@/components/Skeletons';
+
+const QuantityCounter = lazy(() => import('@/components/QuantityCounter/QuantityCounter'));
+const ColorSelector = lazy(() => import('@/components/ColorSelector/ColorSelector'));
 
 interface ProductDetailProps {
   product: Product;
@@ -25,7 +27,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
     setSelectedImage,
   } = useProductDetailStore();
 
-  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     setProduct(product);
@@ -57,21 +58,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
       <div className={styles.productDetail}>
       <div className={styles.productDetail__imageSection}>
         <div className={styles.productDetail__mainImageWrapper}>
-          {imageError ? (
-            <div className={styles.productDetail__imagePlaceholder}>
-              <span>Image not available</span>
-            </div>
-          ) : (
-            <Image
-              src={selectedImage || product.image}
-              alt={product.title}
-              width={400}
-              height={400}
-              className={styles.productDetail__mainImage}
-              onError={() => setImageError(true)}
-              priority
-            />
-          )}
+          <OptimizedImage
+            src={selectedImage || product.image}
+            alt={product.title}
+            width={400}
+            height={400}
+            className={styles.productDetail__mainImage}
+            priority
+          />
           
           <div className={styles.productDetail__thumbnails}>
             {thumbnails.map((thumb, index) => (
@@ -84,7 +78,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
                     : ''
                 }`}
               >
-                <Image
+                <OptimizedImage
                   src={thumb}
                   alt={`${product.title} view ${index + 1}`}
                   width={80}
@@ -122,21 +116,25 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             <label className={styles.productDetail__optionLabel}>
               Colours Available
             </label>
-            <ColorSelector
-              colors={productColors}
-              selectedColor={selectedColor}
-              onColorSelect={setSelectedColor}
-            />
+            <Suspense fallback={<SkeletonBox width="100%" height={40} />}>
+              <ColorSelector
+                colors={productColors}
+                selectedColor={selectedColor}
+                onColorSelect={setSelectedColor}
+              />
+            </Suspense>
           </div>
         </div>
 
         <div className={styles.productDetail__actions}>
           <div className={styles.productDetail__quantityRow}>
-            <QuantityCounter
-              quantity={quantity}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
-            />
+            <Suspense fallback={<SkeletonBox width={120} height={40} />}>
+              <QuantityCounter
+                quantity={quantity}
+                onIncrement={incrementQuantity}
+                onDecrement={decrementQuantity}
+              />
+            </Suspense>
           </div>
           
           <button
