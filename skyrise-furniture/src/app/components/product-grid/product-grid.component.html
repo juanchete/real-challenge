@@ -1,0 +1,53 @@
+<section class="product-grid-section">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="product-grid product-grid--loading">
+    <app-product-card 
+      *ngFor="let skeleton of loadingSkeletons" 
+      [product]="null">
+    </app-product-card>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="product-grid__error">
+    <div class="product-grid__error-content">
+      <svg class="product-grid__error-icon" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M24 16V24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M24 32H24.02" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3 class="product-grid__error-title">Oops! Something went wrong</h3>
+      <p class="product-grid__error-message">{{ error }}</p>
+      <button class="btn btn--primary" (click)="onRetry()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && products.length === 0" class="product-grid__empty">
+    <div class="product-grid__empty-content">
+      <svg class="product-grid__empty-icon" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M38 38L30.12 30.12M34 20C34 27.732 27.732 34 20 34C12.268 34 6 27.732 6 20C6 12.268 12.268 6 20 6C27.732 6 34 12.268 34 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3 class="product-grid__empty-title">No products found</h3>
+      <p class="product-grid__empty-message">Try adjusting your filters or search criteria</p>
+      <button class="btn btn--secondary" (click)="onClearFilters()">Clear Filters</button>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div *ngIf="!isLoading && !error && products.length > 0" class="product-grid">
+    <app-product-card 
+      *ngFor="let product of products; trackBy: trackByProductId" 
+      [product]="product"
+      (addToCart)="onAddToCart($event)"
+      (productClick)="onProductClick($event)">
+    </app-product-card>
+  </div>
+
+  <!-- Load More Button -->
+  <div *ngIf="!isLoading && !error && hasMore && products.length > 0" class="product-grid__load-more">
+    <button class="btn btn--secondary" (click)="onLoadMore()" [disabled]="isLoadingMore">
+      <span *ngIf="!isLoadingMore">Load More Products</span>
+      <span *ngIf="isLoadingMore">Loading...</span>
+    </button>
+  </div>
+</section>
