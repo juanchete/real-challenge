@@ -63,7 +63,7 @@
 .hero__word {
   display: inline-block;
   background-color: var(--color-background);
-  padding: 20px 100px;
+  padding: 20px;
   border-radius: var(--radius-lg);
   position: relative;
   z-index: 5;
@@ -83,7 +83,7 @@
   right: -5%;
   top: 50%;
   transform: translateY(-50%);
-  width: 70%;
+  width: 85%;
   height: 270px;
   z-index: 1;
 }
@@ -150,40 +150,107 @@
 
 /* Bottom Section */
 .bottom-section {
-  background-color: var(--color-light-background);
+  background-color: #FFFFFF;
   padding: var(--space-xxxl) 0;
+  overflow: visible;
 }
 
-.unique-furniture {
+.unique-furniture__wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-xxl);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  overflow: visible;
 }
 
 .unique-furniture__content {
-  flex: 1;
-  max-width: 500px;
+  position: relative;
+  z-index: 10;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+.unique-furniture__badge {
+  display: inline-block;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-secondary);
+  margin-bottom: var(--space-lg);
+  position: relative;
+  z-index: 10;
 }
 
 .unique-furniture__title {
   font-size: var(--font-size-h2);
   font-weight: var(--font-weight-bold);
-  line-height: var(--line-height-normal);
+  line-height: 1;
   color: var(--color-primary);
-  margin: 0 0 var(--space-lg);
+  margin: 0 0 var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  position: relative;
+}
+
+.unique-furniture__word {
+  display: inline-block;
+  background-color: var(--color-background);
+  padding: 15px 50px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  z-index: 5;
+  margin-bottom: -5px;
+}
+
+.unique-furniture__word:nth-child(1) {
+  margin-left: 0;
+  padding-right: 150px;
+}
+
+.unique-furniture__word:nth-child(2) {
+  margin-left: 80px;
+}
+
+.unique-furniture__word:nth-child(3) {
+  margin-left: 160px;
+  
 }
 
 .unique-furniture__description {
   color: var(--color-secondary);
   line-height: var(--line-height-loose);
+  max-width: 500px;
+  position: relative;
+  z-index: 10;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-background);
+  margin-top: 100px;
+  padding: 10px;
+  margin-left: 580px;
+}
+
+.unique-furniture__image-container {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80%;
+  height: 400px;
+  z-index: 1;
 }
 
 .unique-furniture__image {
-  flex: 1;
-  height: 400px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-light-background);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  position: relative;
 }
 
 .unique-furniture__img {
@@ -352,14 +419,55 @@
   }
   
   /* Unique furniture mobile */
-  .unique-furniture {
+  .unique-furniture__wrapper {
     flex-direction: column;
-    text-align: center;
+  }
+
+  .unique-furniture__content {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .unique-furniture__badge {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .unique-furniture__title {
+    font-size: 36px;
+  }
+
+  .unique-furniture__word {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin-bottom: 5px;
+    font-size: 36px;
+  }
+
+  .unique-furniture__word:nth-child(1),
+  .unique-furniture__word:nth-child(2),
+  .unique-furniture__word:nth-child(3) {
+    margin-left: 0;
+    padding-right: 0;
+  }
+
+  .unique-furniture__description {
+    margin-bottom: var(--space-xl);
   }
   
-  .unique-furniture__image {
+  .unique-furniture__image-container {
+    position: relative;
     width: 100%;
     height: 250px;
+    transform: none;
+    right: auto;
+  }
+
+  .unique-furniture__image {
+    background-color: transparent;
+    border-radius: 0;
   }
   
   /* CTA mobile */
