@@ -1,0 +1,42 @@
+/* BEM CSS for Rating Component */
+.rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rating__stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating__star {
+  color: var(--color-rating-star-empty);
+  transition: color var(--animation-duration-fast) var(--animation-easing-default);
+}
+
+.rating__star--filled {
+  color: var(--color-rating-star);
+}
+
+.rating__star--half {
+  position: relative;
+  color: var(--color-rating-star-empty);
+}
+
+.rating__star--half::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-color: var(--color-rating-star);
+  clip-path: inset(0 50% 0 0);
+}
+
+.rating__text {
+  font-size: var(--font-size-body-small);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+}

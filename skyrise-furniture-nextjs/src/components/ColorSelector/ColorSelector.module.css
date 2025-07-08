@@ -1,0 +1,50 @@
+/* BEM CSS for ColorSelector Component */
+.colorSelector {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.colorSelector__option {
+  width: var(--color-swatch-width);
+  height: var(--color-swatch-height);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--animation-duration-fast) var(--animation-easing-default);
+  box-shadow: var(--shadow-sm);
+  padding: 0;
+  background: none;
+}
+
+.colorSelector__option:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+.colorSelector__option--selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.colorSelector__option--selected:hover {
+  transform: scale(1.05);
+}
+
+/* Specific color styles using data attributes if needed */
+.colorSelector__option[data-color="lightBlue"] {
+  background-color: var(--color-accent-light-blue);
+}
+
+.colorSelector__option[data-color="teal"] {
+  background-color: var(--color-accent-teal);
+}
+
+.colorSelector__option[data-color="lightGreen"] {
+  background-color: var(--color-accent-light-green);
+}
+
+.colorSelector__option[data-color="blue"] {
+  background-color: var(--color-accent-blue);
+}
