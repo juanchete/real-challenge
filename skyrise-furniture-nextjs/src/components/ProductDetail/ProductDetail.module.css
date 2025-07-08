@@ -2,10 +2,10 @@
 .productDetail {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-xxxxl);
-  max-width: var(--container-width);
+  gap: 80px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-xl);
+  padding: 40px 24px;
 }
 
 @media (max-width: 768px) {
@@ -19,7 +19,6 @@
 .productDetail__imageSection {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
 }
 
 .productDetail__mainImageWrapper {
@@ -27,7 +26,7 @@
   aspect-ratio: 1;
   position: relative;
   background-color: var(--color-surface);
-  border-radius: var(--radius-xl);
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -55,21 +54,23 @@
 
 .productDetail__thumbnails {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 12px;
   overflow-x: auto;
+  margin-top: 16px;
+  justify-content: flex-start;
 }
 
 .productDetail__thumbnail {
-  width: 80px;
-  height: 80px;
-  border: 2px solid transparent;
-  border-radius: var(--radius-md);
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
   cursor: pointer;
   overflow: hidden;
-  background-color: var(--color-surface);
+  background-color: var(--color-light-background);
   padding: 0;
   flex-shrink: 0;
-  transition: all var(--animation-duration-fast) var(--animation-easing-default);
+  transition: all 0.2s ease;
 }
 
 .productDetail__thumbnail--active {
@@ -84,36 +85,38 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: var(--spacing-xs);
+  padding: 4px;
 }
 
 /* Info Section */
 .productDetail__infoSection {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 24px;
 }
 
 .productDetail__header {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 12px;
 }
 
 .productDetail__category {
-  font-size: var(--font-size-product-category);
+  font-size: 12px;
   color: var(--color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-weight: var(--font-weight-medium);
+  font-weight: 500;
+  font-family: var(--font-family-logo);
 }
 
 .productDetail__title {
-  font-size: var(--font-size-product-title);
-  font-weight: var(--font-weight-semibold);
+  font-size: 32px;
+  font-weight: 600;
   color: var(--color-primary);
   line-height: 1.3;
   letter-spacing: -0.01em;
+  font-family: var(--font-family-logo);
 }
 
 .productDetail__rating {
@@ -123,34 +126,41 @@
 }
 
 .productDetail__price {
-  font-size: var(--font-size-product-price);
-  font-weight: var(--font-weight-bold);
+  font-size: 24px;
+  font-weight: 500;
   color: var(--color-primary);
+  font-family: var(--font-family-logo);
 }
 
 .productDetail__description {
-  font-size: var(--font-size-body-large);
+  font-size: 14px;
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--color-secondary);
+  font-family: var(--font-family-logo);
 }
 
 /* Options */
 .productDetail__options {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 24px;
+  margin: 8px 0;
 }
 
 .productDetail__optionGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 12px;
 }
 
 .productDetail__optionLabel {
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-secondary);
+  font-family: var(--font-family-logo);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
 }
 
 /* Actions */
@@ -169,22 +179,23 @@
 
 .productDetail__buyButton {
   width: 100%;
-  padding: var(--spacing-md) var(--spacing-xl);
+  padding: 16px 24px;
   background-color: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-background);
   border: none;
-  border-radius: var(--radius-xxl);
-  font-size: var(--font-size-body-large);
-  font-weight: var(--font-weight-semibold);
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all var(--animation-duration-normal) var(--animation-easing-default);
-  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family-logo);
 }
 
 .productDetail__buyButton:hover {
   background-color: var(--color-secondary);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .productDetail__buyButton:active {
@@ -193,40 +204,45 @@
 
 /* Additional Info */
 .productDetail__additionalInfo {
-  margin-top: var(--spacing-xxl);
+  margin-top: 48px;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 0;
 }
 
 .productDetail__infoSection {
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .productDetail__infoSection:first-child {
-  border-top: none;
-  padding-top: 0;
+  border-top: 1px solid var(--color-border);
 }
 
 .productDetail__infoTitle {
-  font-size: var(--font-size-h4);
-  font-weight: var(--font-weight-semibold);
+  font-size: 16px;
+  font-weight: 500;
   color: var(--color-primary);
   cursor: pointer;
-  padding: var(--spacing-sm) 0;
+  padding: 20px 0;
   list-style: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: var(--font-family-logo);
+  user-select: none;
 }
 
 .productDetail__infoTitle::after {
   content: '+';
-  font-size: 20px;
-  font-weight: var(--font-weight-regular);
+  font-size: 24px;
+  font-weight: 300;
   color: var(--color-secondary);
-  transition: transform var(--animation-duration-fast) var(--animation-easing-default);
+  transition: transform 0.2s ease;
+  line-height: 1;
+}
+
+.productDetail__infoTitle:hover {
+  color: var(--color-secondary);
 }
 
 details[open] .productDetail__infoTitle::after {
@@ -234,8 +250,9 @@ details[open] .productDetail__infoTitle::after {
 }
 
 .productDetail__infoContent {
-  padding: var(--spacing-md) 0;
-  font-size: var(--font-size-body-regular);
+  padding: 0 0 20px 0;
+  font-size: 14px;
   line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--color-secondary);
+  font-family: var(--font-family-logo);
 }

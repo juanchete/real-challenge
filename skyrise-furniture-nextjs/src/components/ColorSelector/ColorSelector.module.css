@@ -1,19 +1,19 @@
 /* BEM CSS for ColorSelector Component */
 .colorSelector {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .colorSelector__option {
-  width: var(--color-swatch-width);
-  height: var(--color-swatch-height);
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-surface);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--color-background);
   cursor: pointer;
   position: relative;
-  transition: all var(--animation-duration-fast) var(--animation-easing-default);
-  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 0 0 1px var(--color-border);
   padding: 0;
   background: none;
 }
@@ -24,8 +24,8 @@
 }
 
 .colorSelector__option--selected {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary);
+  border-color: var(--color-background);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15), 0 0 0 2px var(--color-primary);
 }
 
 .colorSelector__option--selected:hover {

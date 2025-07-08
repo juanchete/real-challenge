@@ -2,7 +2,7 @@
 .rating {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 8px;
 }
 
 .rating__stars {
@@ -12,7 +12,7 @@
 
 .rating__star {
   color: var(--color-rating-star-empty);
-  transition: color var(--animation-duration-fast) var(--animation-easing-default);
+  transition: color 0.2s ease;
 }
 
 .rating__star--filled {
@@ -36,7 +36,8 @@
 }
 
 .rating__text {
-  font-size: var(--font-size-body-small);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  color: var(--color-secondary);
+  font-weight: 400;
+  font-family: var(--font-family-logo);
 }

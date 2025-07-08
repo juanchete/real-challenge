@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ProductDetail from '@/components/ProductDetail/ProductDetail';
+import SimilarProducts from '@/components/SimilarProducts/SimilarProducts';
 import { getProductById } from '@/lib/api';
 import styles from './page.module.css';
 
@@ -47,11 +48,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <main className={styles.productPage}>
       <nav className={styles.productPage__nav}>
         <div className={styles.productPage__navContainer}>
-          <Link href="/" className={styles.productPage__logo}>
-            skyrise decor
+          <Link href="http://localhost:4200" className={styles.productPage__logo}>
+            <span className={styles.productPage__logoText}>skyrise</span>
+            <span className={styles.productPage__logoAccent}>decor</span>
           </Link>
           <button className={styles.productPage__cartButton}>
-            Lets Talk!
+            Let&apos;s Talk!
           </button>
         </div>
       </nav>
@@ -63,12 +65,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <section className={styles.productPage__similarSection}>
         <div className={styles.productPage__similarContainer}>
           <h2 className={styles.productPage__similarTitle}>Similar Furnitures</h2>
-          <div className={styles.productPage__similarGrid}>
-            {/* In a real app, you would fetch related products here */}
-            <p className={styles.productPage__similarMessage}>
-              More products coming soon...
-            </p>
-          </div>
+          <SimilarProducts currentProductId={product.id} category={product.category} />
         </div>
       </section>
 
@@ -77,7 +74,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className={styles.productPage__ctaContent}>
             <span className={styles.productPage__ctaSubtitle}>Build custom furniture</span>
             <h2 className={styles.productPage__ctaTitle}>Craft Own Furniture</h2>
-            <button className={styles.productPage__ctaButton}>Lets Talk!</button>
+            <button className={styles.productPage__ctaButton}>Let&apos;s Talk!</button>
           </div>
         </div>
       </section>

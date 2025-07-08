@@ -66,9 +66,8 @@ export class ProductListingComponent implements OnInit, OnDestroy {
    * Handle product click event
    */
   onProductClick(product: Product): void {
-    // In a real app, you would navigate to product detail page
-    console.log('Product clicked:', product);
-    // Example: this.router.navigate(['/product', product.id]);
+    // Navigate to Next.js app for product detail
+    window.open(`http://localhost:3000/product/${product.id}`, '_blank');
   }
 
   /**

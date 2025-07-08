@@ -99,7 +99,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
       <div className={styles.productDetail__infoSection}>
         <div className={styles.productDetail__header}>
           <span className={styles.productDetail__category}>
-            {product.category}
+            Modern Furniture
           </span>
           <h1 className={styles.productDetail__title}>
             {product.title}
