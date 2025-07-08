@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="#F5F5F5"/>
+  <!-- Table -->
+  <rect x="150" y="200" width="120" height="80" rx="8" fill="#A0826D" stroke="#8B6B55" stroke-width="2"/>
+  <rect x="160" y="280" width="10" height="60" fill="#8B6B55"/>
+  <rect x="250" y="280" width="10" height="60" fill="#8B6B55"/>
+  <!-- Lamp -->
+  <line x1="350" y1="200" x2="350" y2="100" stroke="#666" stroke-width="3"/>
+  <path d="M320 100 L380 100 L370 140 L330 140 Z" fill="#E8D5B7" stroke="#666" stroke-width="2"/>
+  <circle cx="350" cy="200" r="15" fill="#666"/>
+  <!-- Sofa -->
+  <rect x="320" y="240" width="160" height="60" rx="10" fill="#7B6B5D" stroke="#6B5A4D" stroke-width="2"/>
+  <rect x="320" y="200" width="160" height="50" rx="10" fill="#8B7B6D" stroke="#6B5A4D" stroke-width="2"/>
+  <rect x="310" y="300" width="20" height="40" fill="#6B5A4D"/>
+  <rect x="470" y="300" width="20" height="40" fill="#6B5A4D"/>
+  <text x="300" y="380" font-family="Arial, sans-serif" font-size="14" fill="#999" text-anchor="middle">Unique Furniture Collection</text>
+</svg>
