@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Angular Product Listing Application
+  angular-app:
+    build: 
+      context: ./skyrise-furniture
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    container_name: skyrise-angular
+    restart: unless-stopped
+    networks:
+      - skyrise-network
+    
+  # Next.js Product Detail Application
+  nextjs-app:
+    build: 
+      context: ./skyrise-furniture-nextjs
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: skyrise-nextjs
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - skyrise-network
+
+networks:
+  skyrise-network:
+    driver: bridge
