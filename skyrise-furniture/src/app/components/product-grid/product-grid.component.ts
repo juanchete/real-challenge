@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { Product } from '../../models/product.interface';
-import { ProductService } from '../../services/product.service';
-import { FilterService } from '../../services/filter.service';
-import { FilterState } from '../../models/filter.interface';
+import { AppState } from '../../store';
+import * as ProductActions from '../../store/products/product.actions';
+import * as ProductSelectors from '../../store/products/product.selectors';
+import * as FilterActions from '../../store/filters/filter.actions';
+import * as CartActions from '../../store/cart/cart.actions';
+import * as UiActions from '../../store/ui/ui.actions';
 
 @Component({
   selector: 'app-product-grid',
@@ -20,97 +24,77 @@ export class ProductGridComponent implements OnInit, OnDestroy {
   @Output() addToCart = new EventEmitter<Product>();
   @Output() clearFilters = new EventEmitter<void>();
 
+  // Observables from store
+  products$: Observable<Product[]>;
+  filteredProducts$: Observable<Product[]>;
+  isLoading$: Observable<boolean>;
+  isLoadingMore$: Observable<boolean>;
+  error$: Observable<string | null>;
+  hasMore$: Observable<boolean>;
+
+  // Local state for UI
   products: Product[] = [];
-  allProducts: Product[] = [];
-  filteredProducts: Product[] = [];
   isLoading = true;
   isLoadingMore = false;
-  error: string | null = null;
   hasMore = false;
-  currentPage = 1;
-  loadingSkeletons = Array(8).fill(null); // Show 8 skeleton cards while loading
+  error: string | null = null;
+  loadingSkeletons = Array(8).fill(null);
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private productService: ProductService,
-    private filterService: FilterService
-  ) {}
+  constructor(private store: Store<AppState>) {
+    // Initialize observables
+    this.products$ = this.store.select(ProductSelectors.selectAllProducts);
+    this.filteredProducts$ = this.store.select(ProductSelectors.selectFilteredProducts);
+    this.isLoading$ = this.store.select(ProductSelectors.selectProductsLoading);
+    this.isLoadingMore$ = this.store.select(ProductSelectors.selectProductsLoadingMore);
+    this.error$ = this.store.select(ProductSelectors.selectProductsError);
+    this.hasMore$ = this.store.select(ProductSelectors.selectHasMoreProducts);
+  }
 
   ngOnInit(): void {
-    this.loadProducts();
-    this.subscribeToFilterChanges();
+    // Load products on init
+    this.store.dispatch(ProductActions.loadProducts());
+    
+    // Subscribe to filtered products for display
+    this.filteredProducts$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(products => {
+        this.products = products;
+      });
+
+    // Subscribe to loading state
+    this.isLoading$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loading => {
+        this.isLoading = loading;
+      });
+
+    // Subscribe to error state
+    this.error$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(error => {
+        this.error = error;
+      });
+
+    // Subscribe to loading more state
+    this.isLoadingMore$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loadingMore => {
+        this.isLoadingMore = loadingMore;
+      });
+
+    // Subscribe to has more state
+    this.hasMore$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(hasMore => {
+        this.hasMore = hasMore;
+      });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  /**
-   * Load products from API
-   */
-  private loadProducts(): void {
-    this.isLoading = true;
-    this.error = null;
-
-    this.productService.getAllProducts()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (products) => {
-          this.allProducts = products;
-          this.applyFiltersAndPagination();
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to load products. Please try again.';
-          this.isLoading = false;
-          console.error('Error loading products:', error);
-        }
-      });
-  }
-
-  /**
-   * Subscribe to filter changes
-   */
-  private subscribeToFilterChanges(): void {
-    this.filterService.filterState$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((filterState: FilterState) => {
-        this.currentPage = 1; // Reset to first page when filters change
-        this.applyFiltersAndPagination();
-      });
-  }
-
-  /**
-   * Apply filters and pagination
-   */
-  private applyFiltersAndPagination(): void {
-    const filterState = this.filterService.getCurrentState();
-    
-    // Filter products
-    this.filteredProducts = this.allProducts.filter(product => {
-      // Category filter
-      if (filterState.categoryFilters.length > 0) {
-        if (!filterState.categoryFilters.includes(product.category)) {
-          return false;
-        }
-      }
-
-      // Price filter
-      if (product.price < filterState.priceFilter.min || 
-          product.price > filterState.priceFilter.max) {
-        return false;
-      }
-
-      return true;
-    });
-
-    // Apply pagination
-    const startIndex = 0;
-    const endIndex = this.currentPage * this.productsPerPage;
-    this.products = this.filteredProducts.slice(startIndex, endIndex);
-    this.hasMore = endIndex < this.filteredProducts.length;
   }
 
   /**
@@ -124,14 +108,15 @@ export class ProductGridComponent implements OnInit, OnDestroy {
    * Handle retry after error
    */
   onRetry(): void {
-    this.loadProducts();
+    this.store.dispatch(ProductActions.clearProductError());
+    this.store.dispatch(ProductActions.loadProducts());
   }
 
   /**
    * Handle clear filters
    */
   onClearFilters(): void {
-    this.filterService.resetFilters();
+    this.store.dispatch(FilterActions.resetFilters());
     this.clearFilters.emit();
   }
 
@@ -139,46 +124,31 @@ export class ProductGridComponent implements OnInit, OnDestroy {
    * Handle load more products
    */
   onLoadMore(): void {
-    this.isLoadingMore = true;
-    this.currentPage++;
-    
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-      this.applyFiltersAndPagination();
-      this.isLoadingMore = false;
-    }, 500);
+    this.store.dispatch(ProductActions.loadMoreProducts());
   }
 
   /**
    * Handle add to cart event
    */
   onAddToCart(product: Product): void {
+    this.store.dispatch(CartActions.addToCart({ product }));
+    this.store.dispatch(UiActions.showNotification({ 
+      message: `${product.title} added to cart!`,
+      notificationType: 'success'
+    }));
     this.addToCart.emit(product);
-    // You could add a toast notification here
-    console.log('Added to cart:', product.title);
+    
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      this.store.dispatch(UiActions.hideNotification());
+    }, 3000);
   }
 
   /**
    * Handle product click event
    */
   onProductClick(product: Product): void {
+    this.store.dispatch(ProductActions.selectProduct({ productId: product.id }));
     this.productClick.emit(product);
-    // You could navigate to product detail page here
-    console.log('Product clicked:', product.title);
-  }
-
-  /**
-   * Get dynamic min/max prices from products
-   */
-  getPriceRange(): { min: number; max: number } {
-    if (this.allProducts.length === 0) {
-      return { min: 0, max: 1000 };
-    }
-
-    const prices = this.allProducts.map(p => p.price);
-    return {
-      min: Math.floor(Math.min(...prices)),
-      max: Math.ceil(Math.max(...prices))
-    };
   }
 }

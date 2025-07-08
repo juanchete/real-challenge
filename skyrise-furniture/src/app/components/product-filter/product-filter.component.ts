@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ProductService } from '../../services/product.service';
-import { FilterService } from '../../services/filter.service';
 import { Product, ProductCategory } from '../../models/product.interface';
 import { PriceRange } from '../../models/filter.interface';
+import { AppState } from '../../store';
+import * as FilterActions from '../../store/filters/filter.actions';
+import * as FilterSelectors from '../../store/filters/filter.selectors';
+import * as ProductSelectors from '../../store/products/product.selectors';
+import * as UiActions from '../../store/ui/ui.actions';
 
 interface ColorOption {
   name: string;
@@ -76,16 +80,13 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private priceChangeSubject = new Subject<PriceRange>();
 
-  constructor(
-    private productService: ProductService,
-    private filterService: FilterService
-  ) {}
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.initializeFilters();
-    this.subscribeToFilterChanges();
+    this.subscribeToStoreSelectors();
     this.setupPriceDebounce();
-    this.updateCategoryCounts();
+    this.subscribeToCategoryCounts();
+    this.subscribeToPriceRange();
   }
 
   ngOnDestroy(): void {
@@ -94,24 +95,64 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initialize filters from service
+   * Subscribe to store selectors
    */
-  private initializeFilters(): void {
-    const currentState = this.filterService.getCurrentState();
-    this.selectedCategories = [...currentState.categoryFilters];
-    this.selectedColors = [...(currentState.colorFilters || [])];
-    this.currentPriceRange = { ...currentState.priceFilter };
-    this.updateActiveFilterCount();
+  private subscribeToStoreSelectors(): void {
+    // Subscribe to category filters
+    this.store.select(FilterSelectors.selectCategoryFilters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(categories => {
+        this.selectedCategories = [...categories];
+      });
+
+    // Subscribe to price filter
+    this.store.select(FilterSelectors.selectPriceFilter)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(priceFilter => {
+        this.currentPriceRange = { ...priceFilter };
+      });
+
+    // Subscribe to color filters
+    this.store.select(FilterSelectors.selectColorFilters)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(colors => {
+        this.selectedColors = [...colors];
+      });
+
+    // Subscribe to active filter count
+    this.store.select(FilterSelectors.selectActiveFilterCount)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(count => {
+        this.activeFilterCount = count;
+      });
   }
 
   /**
-   * Subscribe to filter changes
+   * Subscribe to category counts from products
    */
-  private subscribeToFilterChanges(): void {
-    this.filterService.filterState$
+  private subscribeToCategoryCounts(): void {
+    this.store.select(ProductSelectors.selectCategoryCounts)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.updateActiveFilterCount();
+      .subscribe(counts => {
+        this.categoryCounts = counts;
+      });
+  }
+
+  /**
+   * Subscribe to dynamic price range from products
+   */
+  private subscribeToPriceRange(): void {
+    this.store.select(ProductSelectors.selectProductPriceRange)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(range => {
+        this.priceRange = range;
+        // Update current range if it's outside the new bounds
+        if (this.currentPriceRange.min < range.min || this.currentPriceRange.max > range.max) {
+          this.store.dispatch(FilterActions.setPriceRange({ 
+            min: Math.max(this.currentPriceRange.min, range.min),
+            max: Math.min(this.currentPriceRange.max, range.max)
+          }));
+        }
       });
   }
 
@@ -126,7 +167,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(priceRange => {
-        this.filterService.updatePriceFilter(priceRange);
+        this.store.dispatch(FilterActions.updatePriceFilter({ priceRange }));
         this.filtersChanged.emit();
       });
   }
@@ -153,20 +194,12 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
     
     if (category === 'all') {
       if (checkbox.checked) {
-        this.selectedCategories = [];
+        this.store.dispatch(FilterActions.resetCategoryFilters());
       }
     } else {
-      if (checkbox.checked) {
-        this.selectedCategories.push(category);
-      } else {
-        const index = this.selectedCategories.indexOf(category);
-        if (index > -1) {
-          this.selectedCategories.splice(index, 1);
-        }
-      }
+      this.store.dispatch(FilterActions.toggleCategory({ category }));
     }
     
-    this.filterService.updateCategoryFilters(this.selectedCategories);
     this.filtersChanged.emit();
   }
 
@@ -178,20 +211,6 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
       return this.products.length;
     }
     return this.categoryCounts[category] || 0;
-  }
-
-  /**
-   * Update category counts
-   */
-  private updateCategoryCounts(): void {
-    this.categoryCounts = {};
-    this.products.forEach(product => {
-      if (this.categoryCounts[product.category]) {
-        this.categoryCounts[product.category]++;
-      } else {
-        this.categoryCounts[product.category] = 1;
-      }
-    });
   }
 
   /**
@@ -253,14 +272,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
    * Toggle color selection
    */
   onColorToggle(color: string): void {
-    const index = this.selectedColors.indexOf(color);
-    if (index > -1) {
-      this.selectedColors.splice(index, 1);
-    } else {
-      this.selectedColors.push(color);
-    }
-    
-    this.filterService.updateColorFilters(this.selectedColors);
+    this.store.dispatch(FilterActions.toggleColor({ color }));
     this.filtersChanged.emit();
   }
 
@@ -268,8 +280,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
    * Clear all filters
    */
   onClearAllFilters(): void {
-    this.filterService.resetFilters();
-    this.initializeFilters();
+    this.store.dispatch(FilterActions.resetFilters());
     this.filtersChanged.emit();
   }
 
@@ -277,20 +288,14 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
    * Check if any filters are active
    */
   hasActiveFilters(): boolean {
-    return this.filterService.hasActiveFilters();
-  }
-
-  /**
-   * Update active filter count
-   */
-  private updateActiveFilterCount(): void {
-    this.activeFilterCount = this.filterService.getActiveFilterCount();
+    return this.activeFilterCount > 0;
   }
 
   /**
    * Open mobile filter
    */
   openMobileFilter(): void {
+    this.store.dispatch(UiActions.openMobileFilter());
     this.isMobileFilterOpen = true;
     document.body.style.overflow = 'hidden';
   }
@@ -299,6 +304,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
    * Close mobile filter
    */
   closeMobileFilter(): void {
+    this.store.dispatch(UiActions.closeMobileFilter());
     this.isMobileFilterOpen = false;
     document.body.style.overflow = '';
   }
@@ -316,22 +322,5 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
   @Input()
   set productList(products: Product[]) {
     this.products = products;
-    if (products.length > 0) {
-      const prices = products.map(p => p.price);
-      this.priceRange = {
-        min: Math.floor(Math.min(...prices)),
-        max: Math.ceil(Math.max(...prices))
-      };
-      
-      // Update current range if it's outside the new bounds
-      if (this.currentPriceRange.min < this.priceRange.min) {
-        this.currentPriceRange.min = this.priceRange.min;
-      }
-      if (this.currentPriceRange.max > this.priceRange.max) {
-        this.currentPriceRange.max = this.priceRange.max;
-      }
-      
-      this.updateCategoryCounts();
-    }
   }
 }

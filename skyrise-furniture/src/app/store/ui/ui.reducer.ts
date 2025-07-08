@@ -44,11 +44,11 @@ export const uiReducer = createReducer(
   })),
   
   // Notifications
-  on(UiActions.showNotification, (state, { message, type }) => ({
+  on(UiActions.showNotification, (state, { message, notificationType }) => ({
     ...state,
     notification: {
       message,
-      type,
+      type: notificationType,
       isVisible: true
     }
   })),

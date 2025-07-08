@@ -1,12 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ProductFilterComponent } from '../../components/product-filter/product-filter.component';
 import { ProductGridComponent } from '../../components/product-grid/product-grid.component';
 import { Product } from '../../models/product.interface';
-import { ProductService } from '../../services/product.service';
-import { FilterService } from '../../services/filter.service';
+import { AppState } from '../../store';
+import * as ProductActions from '../../store/products/product.actions';
+import * as ProductSelectors from '../../store/products/product.selectors';
+import * as CartActions from '../../store/cart/cart.actions';
+import * as UiActions from '../../store/ui/ui.actions';
+import * as FilterActions from '../../store/filters/filter.actions';
 
 @Component({
   selector: 'app-product-listing',
@@ -21,21 +26,27 @@ import { FilterService } from '../../services/filter.service';
   styleUrl: './product-listing.component.css'
 })
 export class ProductListingComponent implements OnInit, OnDestroy {
-  allProducts: Product[] = [];
-  displayedProductsCount = 0;
-  totalProductsCount = 0;
-  isLoading = true;
+  // Observables from store
+  allProducts$: Observable<Product[]>;
+  filteredProducts$: Observable<Product[]>;
+  displayedProductsCount$: Observable<number>;
+  totalProductsCount$: Observable<number>;
+  isLoading$: Observable<boolean>;
 
   private destroy$ = new Subject<void>();
 
-  constructor(
-    private productService: ProductService,
-    private filterService: FilterService
-  ) {}
+  constructor(private store: Store<AppState>) {
+    // Initialize observables
+    this.allProducts$ = this.store.select(ProductSelectors.selectAllProducts);
+    this.filteredProducts$ = this.store.select(ProductSelectors.selectFilteredProducts);
+    this.displayedProductsCount$ = this.store.select(ProductSelectors.selectFilteredProductCount);
+    this.totalProductsCount$ = this.store.select(ProductSelectors.selectTotalProductCount);
+    this.isLoading$ = this.store.select(ProductSelectors.selectProductsLoading);
+  }
 
   ngOnInit(): void {
-    this.loadProducts();
-    this.subscribeToProductChanges();
+    // Products are loaded automatically by the ProductGridComponent
+    // No need to load them here since grid component dispatches the action
   }
 
   ngOnDestroy(): void {
@@ -44,71 +55,11 @@ export class ProductListingComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load all products
-   */
-  private loadProducts(): void {
-    this.isLoading = true;
-    
-    this.productService.getAllProducts()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (products) => {
-          this.allProducts = products;
-          this.totalProductsCount = products.length;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Error loading products:', error);
-          this.isLoading = false;
-        }
-      });
-  }
-
-  /**
-   * Subscribe to product count changes from grid
-   */
-  private subscribeToProductChanges(): void {
-    // You could add a service to track displayed products count
-    // For now, we'll update this when filters change
-    this.filterService.filterState$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        // This will be updated by the product grid component
-        this.updateProductCount();
-      });
-  }
-
-  /**
-   * Update product count based on filters
-   */
-  private updateProductCount(): void {
-    const filterState = this.filterService.getCurrentState();
-    
-    let filteredCount = this.allProducts.filter(product => {
-      // Category filter
-      if (filterState.categoryFilters.length > 0) {
-        if (!filterState.categoryFilters.includes(product.category)) {
-          return false;
-        }
-      }
-
-      // Price filter
-      if (product.price < filterState.priceFilter.min || 
-          product.price > filterState.priceFilter.max) {
-        return false;
-      }
-
-      return true;
-    }).length;
-
-    this.displayedProductsCount = filteredCount;
-  }
-
-  /**
    * Handle filters changed event
    */
   onFiltersChanged(): void {
-    this.updateProductCount();
+    // Filters are automatically applied through NgRx selectors
+    // No manual update needed
   }
 
   /**
@@ -124,18 +75,16 @@ export class ProductListingComponent implements OnInit, OnDestroy {
    * Handle add to cart event
    */
   onAddToCart(product: Product): void {
-    // In a real app, you would add to cart service
+    // Cart actions are handled by ProductGridComponent
+    // This is just a pass-through for any additional logic
     console.log('Added to cart:', product);
-    // Example: this.cartService.addItem(product);
-    
-    // You could show a toast notification here
-    alert(`${product.title} added to cart!`);
   }
 
   /**
    * Handle clear filters event
    */
   onClearFilters(): void {
-    this.filterService.resetFilters();
+    // Clear filters action is handled by ProductGridComponent
+    // This is just a pass-through for any additional logic
   }
 }

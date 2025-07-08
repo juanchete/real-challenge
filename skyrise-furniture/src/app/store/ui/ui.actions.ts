@@ -21,7 +21,7 @@ export const showNotification = createAction(
   '[UI] Show Notification',
   props<{ 
     message: string; 
-    type: 'success' | 'error' | 'info' | 'warning' 
+    notificationType: 'success' | 'error' | 'info' | 'warning' 
   }>()
 );
 

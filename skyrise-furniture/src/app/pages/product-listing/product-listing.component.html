@@ -21,7 +21,7 @@
         <!-- Sidebar Filters -->
         <aside class="content-wrapper__sidebar">
           <app-product-filter 
-            [productList]="allProducts"
+            [productList]="(allProducts$ | async) || []"
             (filtersChanged)="onFiltersChanged()">
           </app-product-filter>
         </aside>
@@ -31,8 +31,8 @@
           <div class="products-header">
             <h2 class="products-header__title">Product Categories</h2>
             <div class="products-header__info">
-              <span class="products-header__count" *ngIf="!isLoading">
-                Showing {{ displayedProductsCount }} of {{ totalProductsCount }} products
+              <span class="products-header__count" *ngIf="!(isLoading$ | async)">
+                Showing {{ displayedProductsCount$ | async }} of {{ totalProductsCount$ | async }} products
               </span>
             </div>
           </div>

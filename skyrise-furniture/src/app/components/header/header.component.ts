@@ -1,5 +1,10 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { AppState } from '../../store';
+import * as UiActions from '../../store/ui/ui.actions';
+import * as UiSelectors from '../../store/ui/ui.selectors';
 
 @Component({
   selector: 'app-header',
@@ -8,32 +13,64 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  // Observables from store
+  isMobileMenuOpen$: Observable<boolean>;
+  isScrolled$: Observable<boolean>;
+  
+  // Local state for template bindings
   isMobileMenuOpen = false;
   isScrolled = false;
+  
+  private destroy$ = new Subject<void>();
+
+  constructor(private store: Store<AppState>) {
+    // Initialize observables
+    this.isMobileMenuOpen$ = this.store.select(UiSelectors.selectIsMobileMenuOpen);
+    this.isScrolled$ = this.store.select(UiSelectors.selectIsScrolled);
+  }
 
   ngOnInit(): void {
     // Check initial scroll position
     this.checkScroll();
+    
+    // Subscribe to store state
+    this.isMobileMenuOpen$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isOpen => {
+        this.isMobileMenuOpen = isOpen;
+        // Update body overflow
+        if (isOpen) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+      });
+    
+    this.isScrolled$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(scrolled => {
+        this.isScrolled = scrolled;
+      });
+  }
+  
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    // Clean up body overflow style
+    document.body.style.overflow = '';
   }
 
   /**
    * Toggle mobile menu open/closed state
    */
   toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    this.store.dispatch(UiActions.toggleMobileMenu());
     
     // Update aria-expanded attribute
     const toggleButton = document.querySelector('.header__menu-toggle');
     if (toggleButton) {
-      toggleButton.setAttribute('aria-expanded', this.isMobileMenuOpen.toString());
-    }
-    
-    // Prevent body scroll when menu is open
-    if (this.isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      toggleButton.setAttribute('aria-expanded', (!this.isMobileMenuOpen).toString());
     }
   }
 
@@ -41,8 +78,7 @@ export class HeaderComponent implements OnInit {
    * Close mobile menu
    */
   closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
-    document.body.style.overflow = '';
+    this.store.dispatch(UiActions.closeMobileMenu());
   }
 
   /**
@@ -57,7 +93,8 @@ export class HeaderComponent implements OnInit {
    * Check scroll position
    */
   private checkScroll(): void {
-    this.isScrolled = window.scrollY > 0;
+    const isScrolled = window.scrollY > 0;
+    this.store.dispatch(UiActions.setScrolled({ isScrolled }));
   }
 
   /**
