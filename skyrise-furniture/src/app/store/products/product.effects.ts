@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of, timer } from 'rxjs';
@@ -18,6 +18,9 @@ import { selectAllProducts } from './product.selectors';
 
 @Injectable()
 export class ProductEffects {
+  private readonly actions$ = inject(Actions);
+  private readonly productService = inject(ProductService);
+  private readonly store = inject(Store<AppState>);
   
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
@@ -84,9 +87,5 @@ export class ProductEffects {
     ), { dispatch: false }
   );
 
-  constructor(
-    private actions$: Actions,
-    private productService: ProductService,
-    private store: Store<AppState>
-  ) {}
+  constructor() {}
 }
