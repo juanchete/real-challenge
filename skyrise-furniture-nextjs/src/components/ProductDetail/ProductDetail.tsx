@@ -53,7 +53,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
   ];
 
   return (
-    <div className={styles.productDetail}>
+    <>
+      <div className={styles.productDetail}>
       <div className={styles.productDetail__imageSection}>
         <div className={styles.productDetail__mainImageWrapper}>
           {imageError ? (
@@ -145,46 +146,47 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
             Buy Now
           </button>
         </div>
-
-        <div className={styles.productDetail__additionalInfo}>
-          <details className={styles.productDetail__infoSection}>
-            <summary className={styles.productDetail__infoTitle}>
-              Additional Information
-            </summary>
-            <div className={styles.productDetail__infoContent}>
-              <p>The right coffee table can add the perfect finishing touch to your living room. Some of the latest trends include lift-top tables, storage tables and tables with mid-century or airy designs. If you have been looking for a coffee table that is in line with the latest trends, you probably know that the choice is endless.</p>
-            </div>
-          </details>
-
-          <details className={styles.productDetail__infoSection}>
-            <summary className={styles.productDetail__infoTitle}>
-              Designer
-            </summary>
-            <div className={styles.productDetail__infoContent}>
-              <p>Designed by our in-house team of furniture experts, combining modern aesthetics with functional design principles.</p>
-            </div>
-          </details>
-
-          <details className={styles.productDetail__infoSection}>
-            <summary className={styles.productDetail__infoTitle}>
-              Usability
-            </summary>
-            <div className={styles.productDetail__infoContent}>
-              <p>Perfect for modern living spaces. Easy to maintain and designed to complement various interior styles.</p>
-            </div>
-          </details>
-
-          <details className={styles.productDetail__infoSection}>
-            <summary className={styles.productDetail__infoTitle}>
-              Home Decoration
-            </summary>
-            <div className={styles.productDetail__infoContent}>
-              <p>This piece serves as both a functional furniture item and a decorative element that enhances your home&apos;s aesthetic.</p>
-            </div>
-          </details>
-        </div>
       </div>
     </div>
+
+    <div className={styles.productDetail__additionalInfo}>
+      <details className={styles.productDetail__infoSection}>
+        <summary className={styles.productDetail__infoTitle}>
+          Additional Information
+        </summary>
+        <div className={styles.productDetail__infoContent}>
+          <p>The right coffee table can add the perfect finishing touch to your living room. Some of the latest trends include lift-top tables, storage tables and tables with mid-century or airy designs. If you have been looking for a coffee table that is in line with the latest trends, you probably know that the choice is endless.</p>
+        </div>
+      </details>
+
+      <details className={styles.productDetail__infoSection}>
+        <summary className={styles.productDetail__infoTitle}>
+          Designer
+        </summary>
+        <div className={styles.productDetail__infoContent}>
+          <p>Designed by our in-house team of furniture experts, combining modern aesthetics with functional design principles.</p>
+        </div>
+      </details>
+
+      <details className={styles.productDetail__infoSection}>
+        <summary className={styles.productDetail__infoTitle}>
+          Usability
+        </summary>
+        <div className={styles.productDetail__infoContent}>
+          <p>Perfect for modern living spaces. Easy to maintain and designed to complement various interior styles.</p>
+        </div>
+      </details>
+
+      <details className={styles.productDetail__infoSection}>
+        <summary className={styles.productDetail__infoTitle}>
+          Home Decoration
+        </summary>
+        <div className={styles.productDetail__infoContent}>
+          <p>This piece serves as both a functional furniture item and a decorative element that enhances your home&apos;s aesthetic.</p>
+        </div>
+      </details>
+    </div>
+    </>
   );
 };
 
