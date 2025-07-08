@@ -72,28 +72,28 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
               priority
             />
           )}
-        </div>
-        
-        <div className={styles.productDetail__thumbnails}>
-          {thumbnails.map((thumb, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedImage(thumb)}
-              className={`${styles.productDetail__thumbnail} ${
-                (selectedImage || product.image) === thumb 
-                  ? styles['productDetail__thumbnail--active'] 
-                  : ''
-              }`}
-            >
-              <Image
-                src={thumb}
-                alt={`${product.title} view ${index + 1}`}
-                width={80}
-                height={80}
-                className={styles.productDetail__thumbnailImage}
-              />
-            </button>
-          ))}
+          
+          <div className={styles.productDetail__thumbnails}>
+            {thumbnails.map((thumb, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedImage(thumb)}
+                className={`${styles.productDetail__thumbnail} ${
+                  (selectedImage || product.image) === thumb 
+                    ? styles['productDetail__thumbnail--active'] 
+                    : ''
+                }`}
+              >
+                <Image
+                  src={thumb}
+                  alt={`${product.title} view ${index + 1}`}
+                  width={80}
+                  height={80}
+                  className={styles.productDetail__thumbnailImage}
+                />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
